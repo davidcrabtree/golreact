@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {GameOfLife} from './GameOfLife.js';
+import './MainCSS.css'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+export const canvas = document.querySelector("#gamefield")
+export const ctx = canvas.getContext("2d") //https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
+let isRun = 0;
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const game = new GameOfLife();
+game.gameSetup();
+
+window.onload = () => {
+    //console.log("TESTVALUE");
+    document.querySelector("#start-random").addEventListener("click", 
+        () => {
+            isRun = 1;
+            game.arrayRandomize();
+            game.fillArray();
+            //console.log("Start Listener");
+            let gameInterval = window.setInterval(()=>{
+                if(isRun === 1){
+                    game.runGame();
+                }else{
+                    window.clearInterval(gameInterval);
+                }
+            }, 300)
+        }
+    )
+    document.querySelector("#stop").addEventListener("click",
+        () => {
+            //console.log("Stop Listener");
+            isRun = 0;
+            game.gameSetup();
+        }
+    )
+}
